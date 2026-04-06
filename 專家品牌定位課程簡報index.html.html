@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>你的專業愈強，愈容易被低估</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --berry:#6D2E46;--berry-l:#A26769;--berry-ll:#EDD9E0;--berry-d:#4A1B2F;
+  --dark:#1E1228;--dark2:#2D1B3D;--dark3:#3D2650;
+  --cream:#F5EFE6;--offwhite:#FAF7F3;--warm:#E8DDD0;
+  --muted:#8C7A85;--border:#D9CCCC;--text:#2D1B3D;
+  --gold:#C9A96E;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:#111;font-family:'DM Sans',sans-serif}
+#deck{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.slide{
+  position:absolute;width:min(100vw,177.78vh);height:min(56.25vw,100vh);
+  display:none;flex-direction:column;overflow:hidden;
+}
+.slide.active{display:flex}
+.slide.enter{animation:slideIn .45s cubic-bezier(.22,1,.36,1) both}
+.slide.exit{animation:slideOut .35s cubic-bezier(.55,0,1,.45) both}
+@keyframes slideIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes slideOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-14px)}}
+
+/* ── TYPOGRAPHY SCALES (based on slide height = h) ── */
+.t-hero{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,6.5vh,72px);font-weight:500;line-height:1.15;letter-spacing:-.01em}
+.t-hero-sm{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,4.8vh,54px);font-weight:500;line-height:1.2}
+.t-title{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,3.8vh,42px);font-weight:500;line-height:1.25}
+.t-subtitle{font-size:clamp(12px,1.9vh,21px);font-weight:300;line-height:1.55}
+.t-body{font-size:clamp(11px,1.7vh,19px);font-weight:400;line-height:1.65}
+.t-small{font-size:clamp(9px,1.4vh,15px);font-weight:400;line-height:1.5}
+.t-label{font-size:clamp(8px,1.15vh,13px);font-weight:500;letter-spacing:.08em;text-transform:uppercase}
+.t-quote{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,3.2vh,36px);font-weight:400;font-style:italic;line-height:1.45}
+
+/* ── BACKGROUNDS ── */
+.bg-dark{background:var(--dark2)}
+.bg-dark2{background:var(--dark)}
+.bg-cream{background:var(--offwhite)}
+.bg-warm{background:var(--cream)}
+
+/* ── LAYOUT HELPERS ── */
+.pad{padding:clamp(20px,4vh,48px) clamp(24px,5vw,72px)}
+.pad-top{padding-top:clamp(16px,3vh,36px)}
+.col{display:flex;flex-direction:column}
+.row{display:flex;flex-direction:row}
+.gap-sm{gap:clamp(6px,1vh,12px)}
+.gap-md{gap:clamp(10px,1.8vh,20px)}
+.gap-lg{gap:clamp(14px,2.5vh,28px)}
+.flex1{flex:1}
+.center{align-items:center;justify-content:center}
+.h-center{justify-content:center}
+.v-center{align-items:center}
+.text-center{text-align:center}
+
+/* ── ACCENT BAR ── */
+.left-bar::before{content:'';position:absolute;left:0;top:0;width:clamp(4px,.6vw,8px);height:100%;background:var(--berry)}
+.left-bar{position:relative}
+.top-bar{position:relative}
+.top-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:clamp(3px,.5vh,6px);background:var(--berry)}
+.bottom-berry{position:relative}
+.bottom-berry::after{content:'';position:absolute;bottom:0;left:0;right:0;height:clamp(28px,4.5vh,52px);background:var(--berry)}
+.bottom-berry-text{position:absolute;bottom:0;left:0;right:0;height:clamp(28px,4.5vh,52px);display:flex;align-items:center;justify-content:center;z-index:2}
+
+/* ── CH BAR ── */
+.ch-bar{display:flex;align-items:center;gap:clamp(6px,1vw,12px);padding:clamp(8px,1.2vh,14px) clamp(24px,5vw,72px);border-bottom:1px solid rgba(255,255,255,.08)}
+.ch-bar-light{border-bottom:1px solid var(--border)}
+.ch-dot{width:clamp(3px,.4vw,5px);height:clamp(16px,2.8vh,32px);background:var(--berry);flex-shrink:0;border-radius:2px}
+
+/* ── CARDS ── */
+.card{background:#fff;border:1px solid var(--border);border-radius:clamp(6px,.8vw,12px);padding:clamp(12px,2vh,24px) clamp(14px,2.2vw,28px)}
+.card-dark{background:var(--dark3);border:1px solid rgba(255,255,255,.1);border-radius:clamp(6px,.8vw,12px);padding:clamp(12px,2vh,24px) clamp(14px,2.2vw,28px)}
+.card-berry{background:var(--berry);border-radius:clamp(6px,.8vw,12px);padding:clamp(12px,2vh,24px) clamp(14px,2.2vw,28px)}
+.card-cream{background:var(--cream);border:1px solid var(--border);border-radius:clamp(6px,.8vw,12px);padding:clamp(12px,2vh,24px) clamp(14px,2.2vw,28px)}
+
+/* ── BADGES ── */
+.badge{display:inline-block;padding:clamp(2px,.4vh,5px) clamp(8px,1.2vw,14px);border-radius:20px;font-size:clamp(8px,1.1vh,12px);font-weight:500}
+.badge-case{background:#EAF3DE;color:#27500A}
+.badge-tool{background:#E1F5EE;color:#0F6E56}
+
+/* ── STRIPE ACCENT ── */
+.stripe{width:clamp(24px,4vw,48px);height:clamp(2px,.35vh,4px);background:var(--berry);border-radius:2px}
+.stripe-gold{width:clamp(24px,4vw,48px);height:clamp(2px,.35vh,4px);background:var(--gold);border-radius:2px}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border)}
+.divider-dark{height:1px;background:rgba(255,255,255,.12)}
+
+/* ── NAV ── */
+#nav{position:fixed;bottom:clamp(10px,2vh,22px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:clamp(8px,1.5vw,18px);background:rgba(30,18,40,.85);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);border-radius:40px;padding:clamp(6px,1vh,10px) clamp(14px,2.5vw,24px);z-index:100}
+#nav button{background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:clamp(10px,1.5vh,16px);font-family:'DM Sans',sans-serif;padding:clamp(2px,.4vh,4px) clamp(6px,1vw,10px);border-radius:20px;transition:all .2s}
+#nav button:hover{color:#fff;background:rgba(255,255,255,.08)}
+#pg{color:rgba(255,255,255,.4);font-size:clamp(9px,1.3vh,13px);min-width:clamp(36px,5vw,56px);text-align:center}
+#fullbtn{color:rgba(255,255,255,.4);cursor:pointer;font-size:clamp(9px,1.3vh,13px)}
+
+/* ── PROGRESS ── */
+#progress{position:fixed;top:0;left:0;height:2px;background:var(--berry);z-index:101;transition:width .3s ease}
+
+/* ── BEFORE/AFTER ── */
+.ba-before{background:var(--cream);border:1px solid var(--border);border-radius:clamp(6px,.8vw,12px)}
+.ba-after{background:var(--berry);border-radius:clamp(6px,.8vw,12px)}
+
+/* ── COMPARE COL ── */
+.cmp-col{flex:1;border-radius:clamp(6px,.8vw,12px);padding:clamp(10px,1.8vh,20px) clamp(12px,2vw,22px)}
+.cmp-muted{background:var(--cream);border:1px solid var(--border)}
+.cmp-berry{background:var(--berry)}
+
+/* ── PYRAMID ── */
+.pyr-row{display:flex;justify-content:center}
+.pyr-block{border-radius:clamp(4px,.5vw,8px);display:flex;align-items:center;justify-content:center;padding:clamp(6px,1vh,12px)}
+
+/* ── STEP FLOW ── */
+.step-box{flex:1;border-radius:clamp(6px,.8vw,12px);padding:clamp(10px,1.8vh,20px) clamp(10px,1.8vw,20px);position:relative}
+.step-num{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,5vh,56px);font-weight:500;opacity:.25;line-height:1}
+
+/* ── QUOTE BREATH ── */
+@keyframes breathe{0%,100%{opacity:.85}50%{opacity:1}}
+.breathe{animation:breathe 3.5s ease-in-out infinite}
+
+/* ── LIST ITEM ── */
+.list-item{display:flex;align-items:flex-start;gap:clamp(8px,1.2vw,14px);padding:clamp(8px,1.2vh,14px) clamp(12px,2vw,20px);border-radius:clamp(4px,.6vw,8px)}
+.list-dot{width:clamp(4px,.6vw,7px);height:clamp(4px,.6vw,7px);border-radius:50%;flex-shrink:0;margin-top:.4em}
+
+/* ── CROSSOUT ── */
+.crossout{position:relative;opacity:.7}
+.crossout::after{content:'';position:absolute;left:0;top:50%;width:100%;height:1px;background:currentColor;opacity:.6}
+
+/* ── PATH STEP ── */
+.path-step{flex:1;border-radius:clamp(6px,.8vw,12px);padding:clamp(10px,1.8vh,20px) clamp(10px,1.5vw,16px);text-align:center}
+.path-done{background:var(--berry)}
+.path-todo{background:#fff;border:1px solid var(--border)}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="deck"></div>
+<div id="nav">
+  <button onclick="go(-1)">←</button>
+  <span id="pg">1 / 38</span>
+  <button onclick="go(1)">→</button>
+  <span id="fullbtn" onclick="toggleFull()" title="全螢幕">⛶</span>
+</div>
+
+<script>
+const slides = [];
+let cur = 0;
+
+function S(html){ slides.push(html) }
+
+/* ─────────────── SLIDE DEFINITIONS ─────────────── */
+
+/* P1 封面 */
+S(`<div class="slide bg-dark2 left-bar col" style="justify-content:space-between">
+  <div class="pad col gap-lg flex1 h-center" style="padding-left:clamp(32px,6vw,90px)">
+    <div class="col gap-sm">
+      <div class="t-label" style="color:var(--berry-l);margin-bottom:.5em">專家品牌定位課</div>
+      <div class="t-hero" style="color:#fff">你的專業愈強<br>愈容易被低估</div>
+    </div>
+    <div class="col gap-sm" style="margin-top:clamp(8px,1.5vh,20px)">
+      <div class="t-subtitle" style="color:var(--berry-l)">不靠低價、不做網紅，讓市場主動信任你</div>
+      <div class="t-small" style="color:var(--muted);letter-spacing:.06em">定位重建　×　內容系統　×　專家品牌實戰</div>
+    </div>
+  </div>
+  <div class="pad col" style="padding-left:clamp(32px,6vw,90px);padding-bottom:clamp(16px,3vh,36px);border-top:1px solid rgba(255,255,255,.08)">
+    <div class="t-body" style="color:#fff;font-weight:500">Avon</div>
+    <div class="t-small" style="color:var(--muted)">十年醫療代操，我的客戶是同業標竿</div>
+  </div>
+</div>`);
+
+/* P2 這堂課不是什麼 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">開場設定</span></div>
+  <div class="pad col gap-md flex1 h-center">
+    <div class="t-title" style="color:var(--text)">這堂課，不是⋯⋯</div>
+    <div class="col gap-sm" style="margin-top:clamp(4px,.8vh,10px)">
+      ${["教你做網紅","又一堂社群工具課","叫你買廣告、衝流量"].map(t=>`
+      <div class="list-item" style="background:#fff;border:1px solid var(--border)">
+        <div class="list-dot" style="background:var(--berry-l)"></div>
+        <div class="t-body crossout" style="color:var(--muted)">✕　${t}</div>
+      </div>`).join("")}
+    </div>
+    <div style="margin-top:auto;padding:clamp(10px,1.8vh,18px) clamp(14px,2.5vw,28px);background:var(--berry);border-radius:clamp(6px,.8vw,12px)">
+      <div class="t-body" style="color:#fff">教你讓市場主動信任你的專業——不必降格</div>
+    </div>
+  </div>
+</div>`);
+
+/* P3 今天帶走三件事 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">開場設定</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="t-title" style="color:var(--text)">今天你會帶走三件事</div>
+    <div class="row gap-md flex1" style="margin-top:clamp(4px,.8vh,10px)">
+      ${[["01","診斷你現在卡在哪","找出你的專業為什麼沒被看見"],["02","一套可操作的內容框架","帶回去就能用的系統邏輯"],["03","你的第一句專家定位語","現場寫完、現場拿走"]].map(([n,t,s])=>`
+      <div class="col card flex1 gap-sm" style="overflow:hidden;padding:0">
+        <div style="background:var(--berry);padding:clamp(8px,1.4vh,16px);text-align:center">
+          <div class="t-title" style="color:#fff">${n}</div>
+        </div>
+        <div class="col gap-sm" style="padding:clamp(10px,1.8vh,20px)">
+          <div class="t-body" style="color:var(--text);font-weight:500">${t}</div>
+          <div class="t-small" style="color:var(--muted)">${s}</div>
+        </div>
+      </div>`).join("")}
+    </div>
+  </div>
+</div>`);
+
+/* P4 開場場景 */
+S(`<div class="slide bg-dark2 col">
+  <div style="position:absolute;top:clamp(14px,2.5vh,28px);left:clamp(24px,4vw,56px)"><span class="badge badge-case">真實案例</span></div>
+  <div class="pad col flex1 h-center" style="padding-left:clamp(32px,6vw,90px)">
+    <div class="col gap-md">
+      <div class="t-hero-sm" style="color:#fff">"有一位皮膚科醫師<br>龜毛到連標點符號都要確認<br>他很貴、排隊很長<br>從不為流量妥協"</div>
+      <div class="stripe" style="margin-top:clamp(4px,.8vh,10px)"></div>
+      <div class="t-subtitle" style="color:var(--berry-l)">他憑什麼？答案不是技術——是定位做對了</div>
+    </div>
+  </div>
+</div>`);
+
+/* P5 競爭對手不是同行 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.01　開場診斷：你的好，為什麼市場看不見　｜　20 分鐘</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="t-title" style="color:var(--text)">你的競爭對手不是同行</div>
+    <div class="row gap-md flex1" style="margin-top:clamp(4px,.8vh,10px)">
+      <div class="cmp-col cmp-muted col gap-sm flex1 h-center">
+        <div class="t-label" style="color:var(--muted)">你以為的競爭</div>
+        <div class="divider" style="width:100%;margin:clamp(4px,.6vh,8px) 0"></div>
+        ${["同行","低價工具","AI 自動化"].map(t=>`<div class="t-body" style="color:var(--muted)">${t}</div>`).join("")}
+      </div>
+      <div class="cmp-col cmp-berry col gap-sm flex1 h-center">
+        <div class="t-label" style="color:rgba(255,255,255,.6)">真正的競爭</div>
+        <div class="divider-dark" style="width:100%;margin:clamp(4px,.6vh,8px) 0"></div>
+        <div class="t-title" style="color:#fff;text-align:center">沉默</div>
+        <div class="t-small" style="color:rgba(255,255,255,.7);text-align:center">你不被看見<br>就被預設為跟別人一樣</div>
+      </div>
+    </div>
+  </div>
+</div>`);
+
+/* P6 三種典型困境 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.01　開場診斷</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="row v-center gap-md">
+      <div class="t-title" style="color:var(--text)">三種典型困境</div>
+      <div class="t-small" style="color:var(--berry);font-weight:500">你有幾個？</div>
+    </div>
+    <div class="col gap-sm flex1">
+      ${[["醫師","技術很好但診所沒人主動找我","var(--berry-ll)","var(--berry)"],["律師","靠轉介紹，主動來的都在殺價","#E1F5EE","#0F6E56"],["設計師","接案接到懷疑人生，不知道怎麼漲價","#EAF3DE","#3B6D11"]].map(([role,q,bg,tc])=>`
+      <div class="list-item flex1" style="background:${bg};border:1px solid var(--border)">
+        <div style="background:${tc};color:#fff;border-radius:clamp(4px,.5vw,6px);padding:clamp(3px,.5vh,6px) clamp(6px,1vw,10px);flex-shrink:0;font-size:clamp(9px,1.4vh,14px);font-weight:500">${role}</div>
+        <div class="t-body" style="color:var(--text);font-style:italic">"${q}"</div>
+      </div>`).join("")}
+    </div>
+  </div>
+</div>`);
+
+/* P7 金句：信任是設計出來的 */
+S(`<div class="slide bg-dark2 col center">
+  <div class="pad col center gap-lg text-center">
+    <div class="stripe breathe" style="margin:0 auto"></div>
+    <div class="t-quote breathe" style="color:#fff;max-width:min(680px,80vw)">"你的專業不會自己說話<br>你必須替它搭一個舞台"</div>
+    <div class="stripe breathe" style="margin:0 auto"></div>
+  </div>
+</div>`);
+
+/* P8 信任三個來源 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.01　開場診斷</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="t-title" style="color:var(--text)">信任的三個來源</div>
+    <div class="row gap-md flex1" style="margin-top:clamp(4px,.8vh,10px)">
+      ${[["01","曝光","你被看見<br>頻率與存在感",false],["02","一致性","你讓人記住<br>口吻、立場、調性不跳針",false],["03","框架","你讓人知道你是誰<br>"這個人跟別人不一樣"",true]].map(([n,name,desc,hi])=>`
+      <div class="col flex1 ${hi?"card-berry":"card"} gap-sm" style="overflow:hidden;padding:0">
+        <div style="padding:clamp(6px,1.2vh,14px);background:${hi?"rgba(0,0,0,.15)":"var(--berry-ll)"};text-align:center">
+          <div class="t-label" style="color:${hi?"rgba(255,255,255,.7)":"var(--berry)"}">${n}</div>
+        </div>
+        <div class="col gap-sm flex1 h-center text-center" style="padding:clamp(10px,1.8vh,20px) clamp(8px,1.5vw,16px)">
+          <div class="t-body" style="color:${hi?"#fff":"var(--text)"};font-weight:500">${name}</div>
+          <div class="t-small" style="color:${hi?"rgba(255,255,255,.7)":"var(--muted)"}">${desc}</div>
+        </div>
+      </div>`).join("")}
+    </div>
+    <div style="text-align:center;padding:clamp(6px,1vh,12px);background:var(--berry);border-radius:clamp(4px,.6vw,8px)">
+      <div class="t-small" style="color:#fff;font-weight:500">三者缺一，信任不成立</div>
+    </div>
+  </div>
+</div>`);
+
+/* P9 自我診斷 */
+S(`<div class="slide bg-dark2 col">
+  <div style="position:absolute;top:clamp(14px,2.5vh,28px);left:clamp(24px,4vw,56px)"><span class="badge" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.6)">現場練習</span></div>
+  <div class="pad col flex1 h-center gap-lg" style="padding-top:clamp(40px,7vh,80px)">
+    <div class="t-title" style="color:#fff">你的自我診斷</div>
+    <div class="col gap-sm" style="width:100%">
+      ${["你上次公開分享專業觀點，是什麼時候？","你的簡介和最近五篇貼文，是同一個人說話嗎？","潛在客戶看到你，5 秒內知道你做什麼嗎？"].map((q,i)=>`
+      <div class="card-dark row v-center gap-md">
+        <div class="t-title" style="color:var(--berry-l);font-family:'Cormorant Garamond',serif;min-width:clamp(20px,3vw,36px)">${i+1}</div>
+        <div class="t-body" style="color:rgba(255,255,255,.85)">${q}</div>
+      </div>`).join("")}
+    </div>
+  </div>
+</div>`);
+
+/* P10 Ch.01 過場 */
+S(`<div class="slide bg-cream col left-bar">
+  <div class="pad col flex1 h-center gap-md">
+    <div class="t-label" style="color:var(--muted)">Ch.01 小結</div>
+    <div class="t-hero-sm" style="color:var(--text)">問題從來不是你不夠好<br>是市場還沒有機會<br>用正確的眼光看見你</div>
+  </div>
+  <div style="background:var(--berry);padding:clamp(12px,2vh,22px) clamp(24px,5vw,72px)">
+    <div class="t-body" style="color:#fff;font-weight:500">接下來：重新設計這個眼光　→</div>
+  </div>
+</div>`);
+
+/* P11 定位不是口號，是結構 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.02　定位重建：從「我很厲害」到「你需要我」　｜　40 分鐘</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="t-title" style="color:var(--text)">定位不是口號，是一個結構</div>
+    <div class="t-small" style="color:var(--muted)">大多數人的「定位」只有一層</div>
+    <div class="col gap-sm flex1 h-center" style="width:100%;margin-top:clamp(4px,.8vh,10px)">
+      ${[["受眾","你為誰而做","var(--berry)","100%"],["立場","你相信什麼","var(--berry-l)","82%"],["身份","你是誰（大多數人停在這）","var(--muted)","64%"]].map(([n,s,bg,w])=>`
+      <div class="pyr-row" style="width:100%">
+        <div class="pyr-block" style="width:${w};background:${bg}">
+          <div class="row v-center gap-md" style="width:100%">
+            <div class="t-body" style="color:#fff;font-weight:500;flex:1">${n}</div>
+            <div class="t-small" style="color:rgba(255,255,255,.7)">${s}</div>
+          </div>
+        </div>
+      </div>`).join("")}
+    </div>
+  </div>
+</div>`);
+
+/* P12 三層 + 醫師案例 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.02　定位重建</span><span class="badge badge-case" style="margin-left:auto">真實案例</span></div>
+  <div class="pad col flex1 h-center gap-sm">
+    <div class="t-title" style="color:var(--text)">三層拆解：醫師案例還原</div>
+    <div class="col gap-sm flex1" style="margin-top:clamp(4px,.8vh,10px)">
+      ${[["身份","皮膚科醫師，專注皮膚老化與注射美學","var(--muted)"],["立場","我不認同為了快速效果犧牲自然感——美感有底線","var(--berry-l)"],["受眾","在意細節、願意等待正確結果的人","var(--berry)"]].map(([layer,eg,tc])=>`
+      <div class="list-item flex1 card" style="gap:clamp(12px,2vw,24px)">
+        <div style="width:clamp(48px,7vw,88px);flex-shrink:0">
+          <div class="t-label" style="color:${tc}">${layer}</div>
+        </div>
+        <div class="divider" style="width:1px;height:auto;align-self:stretch"></div>
+        <div class="t-body" style="color:var(--text);font-style:italic">"${eg}"</div>
+      </div>`).join("")}
+    </div>
+    <div class="t-small" style="color:var(--muted);font-style:italic">這三層不是我幫他想的——是我問了很多問題之後，他說出來的</div>
+  </div>
+</div>`);
+
+/* P13 專業視角 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.02　定位重建</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="t-title" style="color:var(--text)">什麼是「專業視角」</div>
+    <div class="row gap-md flex1" style="margin-top:clamp(4px,.8vh,10px)">
+      <div class="ba-before col gap-sm flex1 h-center" style="padding:clamp(12px,2vh,24px)">
+        <div class="t-label" style="color:var(--muted)">技術描述</div>
+        <div class="divider" style="width:100%;margin:clamp(4px,.6vh,8px) 0"></div>
+        <div class="t-body" style="color:var(--muted);font-style:italic;text-align:center">"我做玻尿酸填充"</div>
+        <div class="t-small" style="color:var(--muted);text-align:center">——可替換</div>
+      </div>
+      <div class="ba-after col gap-sm flex1 h-center" style="padding:clamp(12px,2vh,24px)">
+        <div class="t-label" style="color:rgba(255,255,255,.6)">視角宣示</div>
+        <div class="divider-dark" style="width:100%;margin:clamp(4px,.6vh,8px) 0"></div>
+        <div class="t-body" style="color:#fff;font-style:italic;text-align:center">"我相信注射應該<br>讓人看不出做過"</div>
+        <div class="t-small" style="color:rgba(255,255,255,.6);text-align:center">——難以複製</div>
+      </div>
+    </div>
+    <div style="background:var(--berry);border-radius:clamp(4px,.6vw,8px);padding:clamp(8px,1.4vh,16px);text-align:center">
+      <div class="t-body" style="color:#fff;font-weight:500">技術可以被學走，視角不行</div>
+    </div>
+  </div>
+</div>`);
+
+/* P14 找視角的三個問題 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.02　定位重建</span><span class="badge badge-tool" style="margin-left:auto">工具實作</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="col gap-sm">
+      <div class="t-title" style="color:var(--text)">找到你的視角：我實際問客戶的三個問題</div>
+      <div class="t-small" style="color:var(--muted)">每個新客戶的品牌調性訪談，我都會問這三個</div>
+    </div>
+    <div class="col gap-sm flex1">
+      ${[["你最不認同同行哪個做法？","立場的反面就是你的立場"],["你最常被問什麼問題？","客戶的焦慮，就是你的價值所在"],["你的客戶怎麼形容你跟別人不一樣？","最真實的視角，往往來自他們"]].map(([q,hint],i)=>`
+      <div class="list-item flex1 card" style="gap:clamp(12px,2vw,24px);align-items:center">
+        <div class="t-title" style="color:var(--berry);font-family:'Cormorant Garamond',serif;min-width:clamp(18px,2.5vw,32px)">${i+1}</div>
+        <div class="col gap-sm flex1">
+          <div class="t-body" style="color:var(--text);font-weight:500">"${q}"</div>
+          <div class="t-small" style="color:var(--muted)">${hint}</div>
+        </div>
+      </div>`).join("")}
+    </div>
+    <div class="t-small" style="color:var(--berry);font-style:italic">答案的交集，就是你的視角　→　今晚對著鏡子問自己</div>
+  </div>
+</div>`);
+
+/* P15 品牌調性文件 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.02　定位重建</span><span class="badge badge-tool" style="margin-left:auto">工具實作</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="col gap-sm">
+      <div class="t-title" style="color:var(--text)">品牌調性文件：我幫客戶做的第一份文件</div>
+      <div class="t-small" style="color:var(--muted)">每個新客戶開始前，這份文件必須建好</div>
+    </div>
+    <div class="row gap-md flex1" style="margin-top:clamp(4px,.8vh,10px)">
+      ${[["口吻設定","親近感 vs 正式感\n選一個主軸，不要搖擺"],["立場設定","「我相信⋯⋯」\n一句話，你的核心主張"],["禁忌詞清單","超推、大推、效果超棒\n（醫師的實際清單——不符合格局感）"]].map(([t,c])=>`
+      <div class="card col gap-sm flex1">
+        <div class="t-label" style="color:var(--berry)">${t}</div>
+        <div class="divider" style="margin:clamp(4px,.6vh,8px) 0"></div>
+        <div class="t-small" style="color:var(--muted);white-space:pre-line">${c}</div>
+      </div>`).join("")}
+    </div>
+    <div class="t-small" style="color:var(--berry);font-style:italic">這份文件建好，往後每篇文章都有依據——今天就可以建你自己的版本</div>
+  </div>
+</div>`);
+
+/* P16 Before After */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.02　定位重建</span><span class="badge badge-case" style="margin-left:auto">真實案例</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="t-title" style="color:var(--text)">Before / After：同一個醫師，不同框架</div>
+    <div class="row gap-md flex1" style="margin-top:clamp(4px,.8vh,10px)">
+      <div class="ba-before col gap-sm flex1" style="padding:clamp(14px,2.5vh,28px)">
+        <div class="t-label" style="color:var(--muted);letter-spacing:.1em">BEFORE</div>
+        <div class="divider" style="margin:clamp(6px,1vh,12px) 0"></div>
+        <div class="t-body" style="color:var(--muted);font-style:italic;flex:1">"皮膚科醫師，擅長抗老療程，歡迎預約諮詢"</div>
+        <div class="t-small" style="color:var(--muted)">——服務清單，任何人都可以複製</div>
+      </div>
+      <div class="ba-after col gap-sm flex1" style="padding:clamp(14px,2.5vh,28px)">
+        <div class="t-label" style="color:rgba(255,255,255,.5);letter-spacing:.1em">AFTER</div>
+        <div class="divider-dark" style="margin:clamp(6px,1vh,12px) 0"></div>
+        <div class="t-body" style="color:#fff;font-style:italic;flex:1">"我在意的不是讓你變美，而是讓你對自己的樣子有自信"</div>
+        <div class="t-small" style="color:rgba(255,255,255,.6)">——立場宣示，難以複製</div>
+      </div>
+    </div>
+    <div class="t-small" style="color:var(--muted);font-style:italic">改寫不是文字好壞的問題——是你有沒有一個值得說的立場</div>
+  </div>
+</div>`);
+
+/* P17 金句：眼紅 */
+S(`<div class="slide bg-dark2 col center">
+  <div class="pad col center gap-lg text-center">
+    <div class="stripe breathe" style="margin:0 auto"></div>
+    <div class="t-quote breathe" style="color:#fff;max-width:min(640px,78vw)">"你沒辦法眼紅一個跟你一樣的人<br><br>同業眼紅他，是因為他站在一個<br>別人搆不到的位置"</div>
+    <div class="t-small breathe" style="color:var(--berry-l)">那個位置，是十年來每一個拒絕降格的決定疊加出來的</div>
+  </div>
+</div>`);
+
+/* P18 五個審查點 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.02　定位重建</span><span class="badge badge-tool" style="margin-left:auto">工具實作</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="col gap-sm">
+      <div class="t-title" style="color:var(--text)">定位一致性：我的五個審查點</div>
+      <div class="t-small" style="color:var(--muted)">每次審稿，我用這五個維度檢查</div>
+    </div>
+    <div class="col gap-sm flex1">
+      ${[["簡介","說清楚你是為誰服務了嗎？"],["貼文口吻","最近五篇是同一個人說話嗎？"],["說話方式","和你的品牌調性一致嗎？"],["出沒場域","是你目標受眾會出現的地方嗎？"],["拒絕哪些合作","和你的定位方向一致嗎？"]].map(([k,v])=>`
+      <div class="list-item flex1 card v-center gap-md">
+        <div class="list-dot" style="background:var(--berry);width:clamp(5px,.7vw,8px);height:clamp(5px,.7vw,8px);margin-top:0"></div>
+        <div class="t-body" style="color:var(--text);font-weight:500;min-width:clamp(60px,9vw,110px)">${k}</div>
+        <div class="t-small" style="color:var(--muted)">${v}</div>
+      </div>`).join("")}
+    </div>
+  </div>
+</div>`);
+
+/* P19 練習：立場句 */
+S(`<div class="slide bg-dark2 col">
+  <div style="position:absolute;top:clamp(14px,2.5vh,28px);left:clamp(24px,4vw,56px)"><span class="badge" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.6)">現場練習　60 秒</span></div>
+  <div class="pad col flex1 h-center gap-lg" style="padding-top:clamp(40px,7vh,80px)">
+    <div class="t-title" style="color:#fff">寫下你的立場句</div>
+    <div class="card-dark" style="border:1px solid rgba(255,255,255,.15)">
+      <div class="t-quote" style="color:rgba(255,255,255,.9)">"我相信＿＿＿，<br>所以我的做法跟大多數人不同"</div>
+    </div>
+    <div class="t-small" style="color:var(--berry-l)">提示：從「我最不認同⋯⋯」開始寫，往往更容易找到真話</div>
+    <div class="t-small" style="color:var(--muted)">這句話，就是你整個品牌的根</div>
+  </div>
+</div>`);
+
+/* P20 定位是地基 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.02　定位重建</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="col gap-sm">
+      <div class="t-title" style="color:var(--text)">定位是地基，內容是磚</div>
+    </div>
+    <div class="col gap-sm flex1 h-center" style="width:100%;margin-top:clamp(4px,.8vh,10px)">
+      ${[["內容","每篇都在說同一件事","var(--berry-l)","64%"],["品牌調性","口吻 × 立場 × 禁忌詞","var(--berry)","82%"],["定位結構","身份 × 立場 × 受眾","var(--dark2)","100%"]].map(([n,s,bg,w])=>`
+      <div class="pyr-row" style="width:100%">
+        <div class="pyr-block" style="width:${w};background:${bg}">
+          <div class="row v-center gap-md" style="width:100%">
+            <div class="t-body" style="color:#fff;font-weight:500;flex:1">${n}</div>
+            <div class="t-small" style="color:rgba(255,255,255,.7)">${s}</div>
+          </div>
+        </div>
+      </div>`).join("")}
+    </div>
+    <div style="background:var(--berry);border-radius:clamp(4px,.6vw,8px);padding:clamp(8px,1.4vh,16px)">
+      <div class="t-body" style="color:#fff;text-align:center;font-style:italic">你不缺內容，你缺讓每篇都說同一件事的骨架</div>
+    </div>
+  </div>
+</div>`);
+
+/* P21 Ch.02 過場 */
+S(`<div class="slide bg-cream col left-bar">
+  <div class="pad col flex1 h-center gap-md">
+    <div class="t-label" style="color:var(--muted)">Ch.02 小結</div>
+    <div class="t-hero-sm" style="color:var(--text)">定位不是口號<br>是讓市場用正確的眼光<br>看見你的結構</div>
+  </div>
+  <div style="background:var(--berry);padding:clamp(12px,2vh,22px) clamp(24px,5vw,72px)">
+    <div class="t-body" style="color:#fff;font-weight:500">接下來：讓每一篇內容都替你累積信任　→</div>
+  </div>
+</div>`);
+
+/* P22 信任邏輯 vs 流量邏輯 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.03　內容實戰：讓每一篇都在累積信任　｜　40 分鐘</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="t-title" style="color:var(--text)">專業人士的內容邏輯，跟一般人不一樣</div>
+    <div class="row gap-md flex1" style="margin-top:clamp(4px,.8vh,10px)">
+      <div class="cmp-col cmp-muted col gap-sm flex1 h-center">
+        <div class="t-label" style="color:var(--muted)">流量邏輯</div>
+        <div class="divider" style="width:100%;margin:clamp(4px,.6vh,8px) 0"></div>
+        ${["衝觸及","追演算法","越多越好"].map(t=>`<div class="t-body" style="color:var(--muted)">${t}</div>`).join("")}
+      </div>
+      <div class="cmp-col cmp-berry col gap-sm flex1 h-center">
+        <div class="t-label" style="color:rgba(255,255,255,.6)">信任邏輯</div>
+        <div class="divider-dark" style="width:100%;margin:clamp(4px,.6vh,8px) 0"></div>
+        ${["精準","一致","每篇說同一件事"].map(t=>`<div class="t-body" style="color:#fff">${t}</div>`).join("")}
+      </div>
+    </div>
+    <div style="background:var(--berry);border-radius:clamp(4px,.6vw,8px);padding:clamp(8px,1.4vh,16px);text-align:center">
+      <div class="t-body" style="color:#fff;font-style:italic">你不需要一萬個追蹤者<br>你需要一百個「看到就想找你」的人</div>
+    </div>
+  </div>
+</div>`);
+
+/* P23 五種內容類型 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.03　內容實戰</span></div>
+  <div class="pad col flex1 h-center gap-sm">
+    <div class="t-title" style="color:var(--text)">五種建立信任感的內容類型</div>
+    <div class="col gap-sm flex1" style="margin-top:clamp(4px,.8vh,10px)">
+      ${[["觀點型","我認為⋯⋯跟大多數人不同","建立立場，適合初期定位期","var(--berry)"],["衛教型","專業知識深入淺出","建立專業信任","var(--berry-l)"],["迷思破除型","大家都想錯了","引共鳴、帶轉發","var(--berry-l)"],["過程透明型","工作方式、決策邏輯公開","建立人設信任","var(--muted)"],["立場宣示型","我不做⋯⋯，因為⋯⋯","篩選精準客戶，適合漲價前","var(--berry)"]].map(([type,eg,when,tc])=>`
+      <div class="list-item flex1 card v-center gap-md">
+        <div style="width:clamp(60px,9vw,100px);flex-shrink:0">
+          <div class="t-small" style="color:${tc};font-weight:500">${type}</div>
+        </div>
+        <div class="divider" style="width:1px;height:clamp(24px,4vh,44px)"></div>
+        <div class="col gap-sm flex1">
+          <div class="t-small" style="color:var(--text);font-style:italic">"${eg}"</div>
+          <div class="t-small" style="color:var(--muted)">${when}</div>
+        </div>
+      </div>`).join("")}
+    </div>
+  </div>
+</div>`);
+
+/* P24 審稿三層 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.03　內容實戰</span><span class="badge badge-tool" style="margin-left:auto">工具實作</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="col gap-sm">
+      <div class="t-title" style="color:var(--text)">我的審稿三層——每篇都在跑的流程</div>
+      <div class="t-small" style="color:var(--muted)">第一層方向錯了，後面兩層不用跑</div>
+    </div>
+    <div class="col gap-sm flex1">
+      ${[["第一層","方向對嗎？","品牌符合度——口吻、立場、議題方向","var(--berry)"],["第二層","有精品感嗎？","品質標準——機器痕跡？廉價感？節奏流暢？","var(--berry-l)"],["第三層","安全嗎？","醫療法規紅線——療效保證？比較廣告？","var(--muted)"]].map(([n,q,desc,tc])=>`
+      <div class="list-item flex1 card gap-md">
+        <div class="col gap-sm" style="min-width:clamp(70px,11vw,130px);flex-shrink:0">
+          <div class="t-label" style="color:${tc}">${n}</div>
+          <div class="t-body" style="color:var(--text);font-weight:500">${q}</div>
+        </div>
+        <div class="divider" style="width:1px;align-self:stretch"></div>
+        <div class="t-small" style="color:var(--muted);flex:1">${desc}</div>
+      </div>`).join("")}
+    </div>
+    <div class="t-small" style="color:var(--berry);font-style:italic">你可以用這三層自審自己下一篇——找到第一層的問題，比改文字更有效</div>
+  </div>
+</div>`);
+
+/* P25 拆解真實貼文 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.03　內容實戰</span><span class="badge badge-case" style="margin-left:auto">真實案例</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="t-title" style="color:var(--text)">拆解一篇真實高信任感貼文</div>
+    <div class="col gap-sm flex1" style="margin-top:clamp(4px,.8vh,10px)">
+      ${[["開頭","抓住對的人","用患者心裡的疑問開場 → 讓「對的人」覺得「這說的是我」","var(--berry)"],["中間","展現判斷視角","不只說答案，說為什麼 → 讀者感受到「這個醫師跟別人想的不一樣」","var(--berry-l)"],["結尾","引導而不強推","給一個思考問題 → 讀完感覺認識了這個人","var(--muted)"]].map(([part,role,desc,tc])=>`
+      <div class="list-item flex1 card gap-md">
+        <div class="col gap-sm" style="min-width:clamp(60px,9vw,110px);flex-shrink:0;align-items:center">
+          <div style="background:${tc};border-radius:clamp(4px,.5vw,6px);padding:clamp(3px,.5vh,5px) clamp(6px,1vw,10px)">
+            <div class="t-small" style="color:#fff;font-weight:500">${part}</div>
+          </div>
+          <div class="t-small" style="color:${tc};text-align:center">${role}</div>
+        </div>
+        <div class="t-small" style="color:var(--muted);flex:1">${desc}</div>
+      </div>`).join("")}
+    </div>
+    <div style="background:var(--berry);border-radius:clamp(4px,.6vw,8px);padding:clamp(8px,1.4vh,16px);text-align:center">
+      <div class="t-small" style="color:#fff">這篇沒有促銷、沒有 CTA，但當月諮詢量是平常兩倍</div>
+    </div>
+  </div>
+</div>`);
+
+/* P26 出沒場域 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.03　內容實戰</span><span class="badge badge-case" style="margin-left:auto">真實案例</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="col gap-sm">
+      <div class="t-title" style="color:var(--text)">出沒場域設計：在對的地方出現</div>
+      <div class="t-small" style="color:var(--muted)">每個場域說的是同一個人，說話方式不一樣</div>
+    </div>
+    <div class="row gap-sm flex1" style="margin-top:clamp(4px,.8vh,10px)">
+      ${[["醫學會論壇","同業信任","var(--muted)"],["FB / IG / 脆","患者信任","var(--berry-l)"],["雜誌媒體","公信力背書","var(--berry)"],["國際導師","跨域影響力","var(--dark2)"]].map(([name,role,bg])=>`
+      <div class="col flex1 gap-sm" style="background:${bg};border-radius:clamp(6px,.8vw,12px);padding:clamp(10px,1.8vh,20px) clamp(8px,1.5vw,16px);justify-content:center;align-items:center;text-align:center">
+        <div class="t-body" style="color:#fff;font-weight:500">${name}</div>
+        <div class="t-small" style="color:rgba(255,255,255,.7)">${role}</div>
+      </div>`).join("")}
+    </div>
+    <div class="t-small" style="color:var(--muted);font-style:italic">你現在出沒的場域，是你目標受眾會出現的地方嗎？</div>
+  </div>
+</div>`);
+
+/* P27 AI 輔助 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.03　內容實戰</span><span class="badge badge-tool" style="margin-left:auto">工具實作</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="col gap-sm">
+      <div class="t-title" style="color:var(--text)">AI 如何輔助——前提是你要先有定位</div>
+    </div>
+    <div style="background:var(--berry);border-radius:clamp(6px,.8vw,12px);padding:clamp(12px,2.2vh,24px)">
+      <div class="t-body" style="color:#fff">沒有品牌調性文件，給 AI 寫文——產出的是「像你又不像你」的東西</div>
+    </div>
+    <div class="row gap-md flex1">
+      ${[["品牌調性文件","口吻 × 立場 × 禁忌詞","var(--muted)"],["AI 產出初稿","根據指令生成草稿","var(--berry-l)"],["你的品味把關","最後 20%\n這是你的核心 IP","var(--berry)"]].map(([t,d,bg],i)=>`
+      <div class="col flex1 gap-sm" style="background:${bg};border-radius:clamp(6px,.8vw,12px);padding:clamp(10px,1.8vh,20px) clamp(10px,1.8vw,20px)">
+        <div class="t-small" style="color:rgba(255,255,255,.6);font-weight:500">Step ${i+1}</div>
+        <div class="t-body" style="color:#fff;font-weight:500">${t}</div>
+        <div class="t-small" style="color:rgba(255,255,255,.7);white-space:pre-line">${d}</div>
+      </div>`).join("")}
+    </div>
+    <div class="t-small" style="color:var(--berry);font-style:italic">定位是 AI 工作流的燃料——沒有這個，工具再好也沒用</div>
+  </div>
+</div>`);
+
+/* P28 現場示範 */
+S(`<div class="slide bg-dark2 col">
+  <div style="position:absolute;top:clamp(14px,2.5vh,28px);left:clamp(24px,4vw,56px)"><span class="badge badge-tool">工具示範</span></div>
+  <div class="pad col flex1 h-center gap-lg" style="padding-top:clamp(40px,7vh,80px)">
+    <div class="t-title" style="color:#fff">現場示範：給 AI 一套品牌指令</div>
+    <div class="col gap-sm" style="width:100%">
+      ${[["輸入","品牌調性文件 ＋ 當月主題"],["AI 產出","初稿（符合口吻與定位）"],["講師修改","說明「這裡為什麼不對」——品味現場示範"]].map(([label,content])=>`
+      <div class="card-dark row v-center gap-md" style="border:1px solid rgba(255,255,255,.1)">
+        <div class="t-label" style="color:var(--berry-l);min-width:clamp(50px,7vw,90px)">${label}</div>
+        <div class="divider-dark" style="width:1px;height:clamp(20px,3.5vh,40px)"></div>
+        <div class="t-body" style="color:rgba(255,255,255,.85)">${content}</div>
+      </div>`).join("")}
+    </div>
+    <div class="t-small" style="color:var(--muted);font-style:italic">重點不是結果好不好看——是讓你看見我怎麼判斷「這裡不對」</div>
+  </div>
+</div>`);
+
+/* P29 系統 vs 靈感 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.03　內容實戰</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="t-title" style="color:var(--text)">系統 vs 靈感：有系統的人越做越輕鬆</div>
+    <div class="row gap-md flex1" style="margin-top:clamp(4px,.8vh,10px)">
+      <div class="cmp-col cmp-muted col gap-sm flex1 h-center">
+        <div class="t-label" style="color:var(--muted)">靠靈感</div>
+        <div class="divider" style="width:100%;margin:clamp(4px,.6vh,8px) 0"></div>
+        ${["不穩定","每次從零","越做越累"].map(t=>`<div class="t-body" style="color:var(--muted)">${t}</div>`).join("")}
+      </div>
+      <div class="cmp-col cmp-berry col gap-sm flex1 h-center">
+        <div class="t-label" style="color:rgba(255,255,255,.6)">有系統</div>
+        <div class="divider-dark" style="width:100%;margin:clamp(4px,.6vh,8px) 0"></div>
+        ${["可預期","每篇累積","越做越省力"].map(t=>`<div class="t-body" style="color:#fff">${t}</div>`).join("")}
+      </div>
+    </div>
+    <div style="background:var(--berry);border-radius:clamp(4px,.6vw,8px);padding:clamp(8px,1.4vh,16px);text-align:center">
+      <div class="t-body" style="color:#fff;font-style:italic">靈感是禮物，系統才是資產</div>
+    </div>
+  </div>
+</div>`);
+
+/* P30 金句：龜毛是標準 */
+S(`<div class="slide bg-dark2 col center">
+  <div class="pad col center gap-lg text-center">
+    <div class="stripe breathe" style="margin:0 auto"></div>
+    <div class="t-quote breathe" style="color:#fff;max-width:min(640px,78vw)">"那位醫師龜毛<br>因為他知道自己值這個標準<br><br>你的龜毛，是你的護城河"</div>
+    <div class="t-small breathe" style="color:var(--berry-l)">你的高標準不是問題——你只是還沒把它變成市場語言</div>
+  </div>
+</div>`);
+
+/* P31 暖身練習 */
+S(`<div class="slide bg-dark2 col">
+  <div style="position:absolute;top:clamp(14px,2.5vh,28px);left:clamp(24px,4vw,56px)"><span class="badge" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.6)">暖身練習　60 秒</span></div>
+  <div class="pad col flex1 h-center gap-lg" style="padding-top:clamp(40px,7vh,80px)">
+    <div class="t-title" style="color:#fff">選一個主題 × 選一種內容類型</div>
+    <div class="col gap-md">
+      ${["你最常被問的問題是什麼？","用哪種內容類型說它，最符合你的定位？"].map((q,i)=>`
+      <div class="card-dark row v-center gap-md" style="border:1px solid rgba(255,255,255,.1)">
+        <div class="t-title" style="color:var(--berry-l);font-family:'Cormorant Garamond',serif;min-width:clamp(18px,2.5vw,32px)">${i+1}</div>
+        <div class="t-body" style="color:rgba(255,255,255,.85)">${q}</div>
+      </div>`).join("")}
+    </div>
+    <div class="t-small" style="color:var(--muted)">這就是你工作坊的起點</div>
+  </div>
+</div>`);
+
+/* P32 Ch.03 過場 */
+S(`<div class="slide bg-cream col left-bar">
+  <div class="pad col flex1 h-center gap-md">
+    <div class="t-label" style="color:var(--muted)">Ch.03 小結</div>
+    <div class="t-hero-sm" style="color:var(--text)">每一篇有定位的內容<br>都是在替你工作<br><br>你不在的時候<br>它還在</div>
+  </div>
+  <div style="background:var(--berry);padding:clamp(12px,2vh,22px) clamp(24px,5vw,72px)">
+    <div class="t-body" style="color:#fff;font-weight:500">接下來：現場完成你的專家品牌框架　→</div>
+  </div>
+</div>`);
+
+/* P33 工作坊任務 */
+S(`<div class="slide bg-dark2 col center">
+  <div class="pad col center gap-lg text-center">
+    <div class="t-label" style="color:var(--berry-l);letter-spacing:.1em">Ch.04　系統化工作坊</div>
+    <div class="t-hero" style="color:#fff">這 30 分鐘<br>你要完成一件事</div>
+    <div class="card-dark" style="border:1px solid rgba(255,255,255,.15);margin-top:clamp(4px,.8vh,10px)">
+      <div class="t-quote" style="color:rgba(255,255,255,.9)">"我是＿＿＿，我幫＿＿＿解決＿＿＿"</div>
+    </div>
+    <div class="t-small" style="color:var(--muted)">寫完這句話，你今天就沒有白來</div>
+  </div>
+</div>`);
+
+/* P34 填空模板 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.04　工作坊</span><span class="badge badge-tool" style="margin-left:auto">工具實作</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="t-title" style="color:var(--text)">專家定位句模板</div>
+    <div class="col gap-sm flex1" style="margin-top:clamp(4px,.8vh,10px)">
+      ${[["我是","身份 ＋ 視角","var(--berry)"],["我幫","目標受眾，具體的誰","var(--berry-l)"],["解決","核心問題，不是服務項目清單","var(--muted)"]].map(([label,hint,tc])=>`
+      <div class="row flex1 gap-md" style="align-items:stretch">
+        <div style="background:${tc};border-radius:clamp(4px,.6vw,8px);min-width:clamp(48px,7vw,88px);display:flex;align-items:center;justify-content:center">
+          <div class="t-body" style="color:#fff;font-weight:500">${label}</div>
+        </div>
+        <div class="card flex1 col h-center" style="border-left:3px solid ${tc}">
+          <div class="t-small" style="color:var(--muted);font-style:italic">${hint}</div>
+        </div>
+      </div>`).join("")}
+    </div>
+    <div class="t-small" style="color:var(--muted);font-style:italic">「受眾」不要寫「所有人」——寫一個你最想服務的具體形象</div>
+  </div>
+</div>`);
+
+/* P35 卡關點 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.04　工作坊</span><span class="badge badge-tool" style="margin-left:auto">工具實作</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="t-title" style="color:var(--text)">常見卡關 ＋ 我的現場處理方式</div>
+    <div class="col gap-sm flex1" style="margin-top:clamp(4px,.8vh,10px)">
+      ${[["「不知道受眾是誰」","你最不想服務誰？剩下的就是你的人"],["「說不出跟別人哪裡不同」","你上次拒絕了什麼？那個拒絕就是你的差異"],["「覺得什麼都能做」","服務所有人 = 不為任何人存在<br>那位醫師也拒絕過很多案子"]].map(([stuck,how])=>`
+      <div class="row flex1 gap-md card" style="align-items:stretch">
+        <div class="col h-center" style="min-width:clamp(100px,16vw,200px);border-right:1px solid var(--border);padding-right:clamp(10px,1.5vw,16px)">
+          <div class="t-small" style="color:var(--berry);font-weight:500;font-style:italic">${stuck}</div>
+        </div>
+        <div class="col h-center flex1">
+          <div class="t-small" style="color:var(--muted)">${how}</div>
+        </div>
+      </div>`).join("")}
+    </div>
+  </div>
+</div>`);
+
+/* P36 現場分享 */
+S(`<div class="slide bg-dark2 col">
+  <div style="position:absolute;top:clamp(14px,2.5vh,28px);left:clamp(24px,4vw,56px)"><span class="badge" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.6)">現場分享</span></div>
+  <div class="pad col flex1 h-center gap-lg" style="padding-top:clamp(40px,7vh,80px)">
+    <div class="t-hero-sm" style="color:#fff">2～3 人分享<br>講師即時給出修正邏輯</div>
+    <div class="card-dark" style="border:1px solid rgba(255,255,255,.1)">
+      <div class="t-body" style="color:rgba(255,255,255,.7)">重點不是「對不對」<br>是讓你看見判斷邏輯是怎麼走的</div>
+    </div>
+    <div class="t-small" style="color:var(--muted);font-style:italic">這就是品味標準的活體展示——比任何框架都有說服力</div>
+  </div>
+</div>`);
+
+/* P37 下一步路徑 */
+S(`<div class="slide bg-cream col">
+  <div class="ch-bar ch-bar-light"><div class="ch-dot"></div><span class="t-label" style="color:var(--muted)">Ch.04　工作坊</span></div>
+  <div class="pad col flex1 h-center gap-md">
+    <div class="t-title" style="color:var(--text)">從這句話出發，你的下一步</div>
+    <div class="row gap-sm flex1" style="margin-top:clamp(4px,.8vh,10px)">
+      <div class="path-step path-done col gap-sm flex1 h-center text-center">
+        <div class="t-label" style="color:rgba(255,255,255,.6)">Step 1</div>
+        <div class="t-body" style="color:#fff;font-weight:500">專家定位句</div>
+        <div class="t-small" style="color:rgba(255,255,255,.7)">✓ 今天完成</div>
+      </div>
+      ${[["Step 2","品牌調性文件","口吻、禁忌詞、視覺感受"],["Step 3","內容系統建立","每月大綱 ＋ 五篇排列邏輯"],["Step 4","AI 工作流整合","讓系統持續運轉，不靠靈感"]].map(([n,t,s])=>`
+      <div class="path-step path-todo col gap-sm flex1 h-center text-center">
+        <div class="t-label" style="color:var(--muted)">${n}</div>
+        <div class="t-body" style="color:var(--text);font-weight:500">${t}</div>
+        <div class="t-small" style="color:var(--muted)">${s}</div>
+      </div>`).join("")}
+    </div>
+    <div style="background:var(--berry);border-radius:clamp(4px,.6vw,8px);padding:clamp(8px,1.4vh,16px);text-align:center">
+      <div class="t-body" style="color:#fff;font-style:italic">這條路，你可以自己走——也可以有人陪你走得更快</div>
+    </div>
+  </div>
+</div>`);
+
+/* P38 結尾 */
+S(`<div class="slide bg-dark2 col left-bar" style="justify-content:space-between">
+  <div class="pad col flex1 h-center gap-lg" style="padding-left:clamp(32px,6vw,90px)">
+    <div class="col gap-md">
+      <div class="stripe-gold breathe"></div>
+      <div class="t-hero breathe" style="color:#fff">你的專業值這個價<br>現在，讓市場也知道</div>
+    </div>
+    <div class="stripe" style="opacity:.4;margin-top:clamp(8px,1.5vh,20px)"></div>
+    <div class="col gap-sm">
+      <div class="t-body" style="color:var(--gold);font-weight:500">Avon</div>
+      <div class="t-small" style="color:var(--muted)">精品社群代操　／　專家品牌顧問</div>
+    </div>
+  </div>
+  <div style="padding:clamp(10px,1.8vh,20px) clamp(32px,6vw,90px);border-top:1px solid rgba(255,255,255,.08)">
+    <div class="t-small" style="color:var(--muted)">合作洽詢</div>
+  </div>
+</div>`);
+
+/* ─────────────── RENDER ENGINE ─────────────── */
+const deck = document.getElementById("deck");
+const pg = document.getElementById("pg");
+const bar = document.getElementById("progress");
+
+slides.forEach((html,i)=>{
+  const div = document.createElement("div");
+  div.innerHTML = html.trim();
+  const sl = div.firstElementChild;
+  sl.dataset.i = i;
+  deck.appendChild(sl);
+});
+
+function show(n){
+  const all = deck.querySelectorAll(".slide");
+  all.forEach(s=>{ s.classList.remove("active","enter","exit"); s.style.display="none"; });
+  cur = Math.max(0, Math.min(slides.length-1, n));
+  const sl = deck.querySelector(`.slide[data-i="${cur}"]`);
+  sl.style.display="flex";
+  void sl.offsetWidth;
+  sl.classList.add("active","enter");
+  pg.textContent = `${cur+1} / ${slides.length}`;
+  bar.style.width = `${((cur+1)/slides.length)*100}%`;
+}
+
+function go(d){ show(cur+d); }
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key==="ArrowDown"||e.key===" ") go(1);
+  if(e.key==="ArrowLeft"||e.key==="ArrowUp") go(-1);
+  if(e.key==="f"||e.key==="F") toggleFull();
+  e.preventDefault();
+});
+
+deck.addEventListener("click",()=>go(1));
+
+function toggleFull(){
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+}
+
+show(0);
+</script>
+</body>
+</html>
